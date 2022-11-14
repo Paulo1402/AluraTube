@@ -3,9 +3,30 @@ import config from '../config.json'
 import styled from 'styled-components'
 import Menu from '../src/components/Menu'
 import { StyledTimeline } from '../src/components/Timeline'
+import { videoService } from '../src/services/videoService'
 
 function HomePage() {
+    const service = videoService()
     const [valorDoFiltro, setValoDoFiltro] = React.useState('')
+    const [playlists, setPlaylists] = React.useState({})
+
+    React.useEffect(() => {
+        service.getAllVideos().then(dados => {
+            const novasPlaylists = {}
+            dados.data.forEach(video => {
+                if (!novasPlaylists[video.playlist]) {
+                    novasPlaylists[video.playlist] = []
+                }
+
+                novasPlaylists[video.playlist] = [
+                    video,
+                    ...novasPlaylists[video.playlist]
+                ]
+            })
+            
+            setPlaylists(novasPlaylists)
+        })
+    }, [])
 
     return (
         <>
@@ -24,6 +45,7 @@ function HomePage() {
                 <Timeline
                     searchValue={valorDoFiltro}
                     playlists={config.playlists}
+                    // playlists={playlists}
                 >
                     Conteúdo
                 </Timeline>
@@ -56,16 +78,15 @@ const StyledHeader = styled.div`
     }
 `
 const StyledBanner = styled.div`
-	background-image: url(${({ bg }) => bg});
-	background-size: cover;
-	height: 230px;
-
+    background-image: url(${({ bg }) => bg});
+    background-size: cover;
+    height: 230px;
 `
 
 function Header() {
     return (
         <StyledHeader>
-            <StyledBanner bg={config.bg}/>
+            <StyledBanner bg={config.bg} />
             <section className="user-info">
                 <img src={`https://github.com/${config.github}.png`} />
                 <div>
