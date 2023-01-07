@@ -44,8 +44,8 @@ function HomePage() {
                 <Header />
                 <Timeline
                     searchValue={valorDoFiltro}
-                    playlists={config.playlists}
-                    // playlists={playlists}
+                    // playlists={config.playlists}
+                    playlists={playlists}
                 >
                     Conteúdo
                 </Timeline>
